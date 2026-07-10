@@ -106,7 +106,7 @@ a{color:inherit;text-decoration:none;}
 
 /* ── SOCIAL PROOF BAR ── */
 .proof-bar{
-  background:var(--dark);color:rgba(255,255,255,1);
+  background:var(--dark);color:rgb(255,255,255);
   padding:16px 24px;text-align:center;
   font-family:var(--display);font-size:0.7344rem;font-weight:700;
   letter-spacing:.1em;text-transform:uppercase;
@@ -179,7 +179,7 @@ a{color:inherit;text-decoration:none;}
 }
 .pain-turn{
   font-family:var(--serif);font-style:italic;
-  font-size:1.071rem;color:rgba(255,255,255,1);line-height:1.65;
+  font-size:1.071rem;color:rgb(255,255,255);line-height:1.65;
   padding-top:24px;border-top:1px solid rgba(255,255,255,.12);
 }
 .pain-turn strong{color:#fff;font-style:normal;}
@@ -232,14 +232,14 @@ a{color:inherit;text-decoration:none;}
 }
 .material-mod-num{
   font-family:var(--display);font-weight:900;font-size:2.04em;
-  color:rgba(255,255,255,1);line-height:1;margin-bottom:2px;
+  color:rgb(255,255,255);line-height:1;margin-bottom:2px;
 }
 .material-mod-title{
   font-family:var(--display);font-weight:900;font-size:1.632em;
   color:#fff;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;
 }
 .material-mod-sub{
-  font-size:1.02em;color:rgba(255,255,255,1);margin-top:2px;
+  font-size:1.02em;color:rgb(255,255,255);margin-top:2px;
 }
 .material-body{
   flex:1;padding:8px 10px;overflow:hidden;
@@ -316,7 +316,7 @@ a{color:inherit;text-decoration:none;}
   align-items:start;gap:16px;
   transition:box-shadow .2s,border-color .2s;
 }
-.modulo:hover{box-shadow:0 4px 24px rgba(193,104,122,.14);border-color:rgba(193,104,122,.3);}
+.modulo:hover{box-shadow:0 4px 24px rgba(193,104,122,.14);border-color:rgb(193,104,122);}
 .mod-num{
   width:48px;height:48px;background:var(--grad-s);border-radius:8px;
   display:flex;align-items:center;justify-content:center;
@@ -375,7 +375,7 @@ a{color:inherit;text-decoration:none;}
   flex-shrink:0;margin-top:1px;
 }
 .pq-item.sim .pq-icon{color:var(--green);}
-.pq-item.nao .pq-icon{color:rgba(107,74,82,.4);}
+.pq-item.nao .pq-icon{color:rgb(107,74,82);}
 .pq-text{font-family:var(--serif);font-size:0.8976rem;color:var(--mauve);line-height:1.55;}
 .pq-text strong{color:var(--dark);}
 
@@ -401,7 +401,7 @@ a{color:inherit;text-decoration:none;}
   background:var(--grad);padding:28px 32px 24px;
   text-align:center;
 }
-.preco-card-top .section-eyebrow{color:rgba(44,24,16,.7);}
+.preco-card-top .section-eyebrow{color:rgb(44,24,16);}
 .preco-card-top h2{
   font-family:var(--display);font-weight:900;font-size:1.53rem;
   color:var(--dark);text-transform:uppercase;letter-spacing:-.01em;
@@ -489,7 +489,7 @@ a{color:inherit;text-decoration:none;}
   font-family:var(--display);font-weight:700;font-size:0.867rem;
   color:#fff;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px;
 }
-.bump-desc{font-family:var(--serif);font-size:0.8364rem;color:rgba(255,255,255,1);line-height:1.5;}
+.bump-desc{font-family:var(--serif);font-size:0.8364rem;color:rgb(255,255,255);line-height:1.5;}
 .bump-price{
   font-family:var(--display);font-weight:700;font-size:0.867rem;
   color:var(--peach);margin-top:6px;
@@ -537,7 +537,7 @@ a{color:inherit;text-decoration:none;}
 /* ── FOOTER ── */
 footer{
   background:var(--dark);padding:30px 24px;text-align:center;
-  font-size:0.7956rem;color:rgba(255,255,255,1);line-height:1.7;
+  font-size:0.7956rem;color:rgb(255,255,255);line-height:1.7;
 }
 
 /* ── STICKY CTA mobile ── */
@@ -548,7 +548,7 @@ footer{
   align-items:center;justify-content:space-between;gap:12px;
 }
 .sticky-info{color:#fff;line-height:1.3;}
-.sticky-info small{display:block;font-size:0.714rem;color:rgba(255,255,255,1);}
+.sticky-info small{display:block;font-size:0.714rem;color:rgb(255,255,255);}
 .sticky-info strong{
   font-family:var(--display);font-size:1.224rem;font-weight:900;
 }
@@ -605,6 +605,8 @@ src="https://www.facebook.com/tr?id=1538792521116054&ev=PageView&noscript=1"/>
   </div>
 </div>
 <style>
+@keyframes marquee {
+  0%   { tr
 @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -719,7 +721,7 @@ src="https://www.facebook.com/tr?id=1538792521116054&ev=PageView&noscript=1"/>
 #lb-prev{left:10px;}
 #lb-next{right:10px;}
 #lb-counter{
-  color:rgba(255,255,255,1);font-size:.8rem;
+  color:rgb(255,255,255);font-size:.8rem;
   margin-top:12px;font-family:var(--display);letter-spacing:.06em;
 }
 /* make carousel images look tappable */
@@ -750,9 +752,7 @@ src="https://www.facebook.com/tr?id=1538792521116054&ev=PageView&noscript=1"/>
 @media(max-width:768px){
   .carousel-img{flex:none;max-width:200px;width:200px;}
 }
-</style>
-<!-- FIM MARQUEE -->
-<nav class="nav">
+v class="nav">
   <span class="nav-ornament">✦</span>
   <span class="nav-brand">Solteiro com Propósito</span>
   <span class="nav-ornament">✦</span>
