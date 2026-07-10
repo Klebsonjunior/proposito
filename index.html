@@ -653,6 +653,57 @@ src="https://www.facebook.com/tr?id=1538792521116054&ev=PageView&noscript=1"/>
   .carousel-img{flex:none;max-width:200px;align-self:center;}
 }
 
+
+/* ── LIGHTBOX ── */
+#lb-overlay{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.92);
+  flex-direction:column;align-items:center;justify-content:center;
+}
+#lb-overlay.open{display:flex;}
+#lb-img{
+  max-width:92vw;max-height:82vh;object-fit:contain;
+  border-radius:8px;user-select:none;pointer-events:none;
+  transition:opacity .2s;
+}
+#lb-close{
+  position:absolute;top:16px;right:20px;
+  background:none;border:none;color:#fff;font-size:2rem;
+  cursor:pointer;line-height:1;z-index:10;
+}
+#lb-prev,#lb-next{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  font-size:1.6rem;padding:10px 16px;cursor:pointer;
+  border-radius:6px;z-index:10;
+}
+#lb-prev{left:10px;}
+#lb-next{right:10px;}
+#lb-counter{
+  color:rgba(255,255,255,.6);font-size:.8rem;
+  margin-top:12px;font-family:var(--display);letter-spacing:.06em;
+}
+/* make carousel images look tappable */
+.carousel-img{cursor:zoom-in;position:relative;}
+.carousel-img::after{
+  content:"🔍 toque para ampliar";
+  position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  font-size:.6rem;background:rgba(0,0,0,.45);color:#fff;
+  padding:3px 8px;border-radius:20px;white-space:nowrap;
+  font-family:var(--display);letter-spacing:.04em;
+  pointer-events:none;
+}
+/* bigger image on carousel */
+.carousel-img .mod-page{
+  width:100%;
+  font-size:clamp(6px,1.8vw,10px);
+}
+@media(max-width:680px){
+  .carousel-img{max-width:260px !important;flex:none !important;align-self:center;}
+  #lb-prev{left:4px;padding:8px 12px;}
+  #lb-next{right:4px;padding:8px 12px;}
+}
+
 </style>
 <!-- FIM MARQUEE -->
 <nav class="nav">
@@ -1149,6 +1200,125 @@ document.querySelectorAll('.fu').forEach(el => obs.observe(el));
   nextBtn.onclick=()=>go(cur+1);
 })();
 
+
+// Swipe for main carousel
+(function(){
+  const track = document.getElementById('carTrack');
+  if(!track) return;
+  let startX = 0;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) < 40) return;
+    const prevBtn = document.getElementById('carPrev');
+    const nextBtn = document.getElementById('carNext');
+    if(dx < 0 && nextBtn) nextBtn.click();
+    else if(dx > 0 && prevBtn) prevBtn.click();
+  });
+})();
+
+
+// Lightbox
+(function(){
+  // Collect all carousel slide images (rendered as mod-page divs with img inside)
+  // We'll screenshot each mod-page as a canvas... but they're HTML not img.
+  // Instead, store the src of the actual <img> tags inside each mod-page
+  const slides = document.querySelectorAll('.carousel-slide');
+  const srcs = [];
+  slides.forEach(slide => {
+    const img = slide.querySelector('.carousel-img img');
+    if(img) srcs.push({src: img.src, alt: img.alt || ''});
+  });
+
+  const overlay = document.getElementById('lb-overlay');
+  const lbImg   = document.getElementById('lb-img');
+  const lbClose = document.getElementById('lb-close');
+  const lbPrev  = document.getElementById('lb-prev');
+  const lbNext  = document.getElementById('lb-next');
+  const lbCtr   = document.getElementById('lb-counter');
+
+  let cur = 0;
+
+  function openLb(idx){
+    // The carousel slides have mod-page (HTML divs), not <img>.
+    // We take a screenshot of the mod-page via html2canvas.
+    // Since we can't load external lib easily, we'll capture the rendered node as dataURL.
+    // Actually let's just show the mod-page div inside the lightbox as a scaled clone.
+    showLb(idx);
+  }
+
+  function showLb(idx){
+    cur = (idx + srcs.length) % srcs.length;
+    // Get the mod-page node of current slide
+    const slide = slides[cur];
+    const modPage = slide.querySelector('.mod-page');
+
+    // Remove previous clone
+    const prev = overlay.querySelector('.lb-clone');
+    if(prev) prev.remove();
+
+    if(modPage){
+      const clone = modPage.cloneNode(true);
+      clone.className = 'lb-clone';
+      clone.style.cssText = 'max-width:85vw;max-height:75vh;overflow:auto;border-radius:8px;font-size:clamp(8px,2.2vw,13px);';
+      lbImg.style.display = 'none';
+      overlay.insertBefore(clone, lbCtr);
+    } else if(srcs[cur]){
+      lbImg.style.display = 'block';
+      lbImg.src = srcs[cur].src;
+    }
+    lbCtr.textContent = (cur+1) + ' / ' + slides.length;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLb(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    const cl = overlay.querySelector('.lb-clone');
+    if(cl) cl.remove();
+    lbImg.style.display = 'block';
+  }
+
+  // Attach click to each carousel-img
+  slides.forEach((slide, i) => {
+    const imgWrap = slide.querySelector('.carousel-img');
+    if(imgWrap) imgWrap.addEventListener('click', () => openLb(i));
+  });
+
+  // Also sync with carousel: when carousel changes, lightbox opens to same index
+  lbClose.onclick = closeLb;
+  lbPrev.onclick  = () => showLb(cur - 1);
+  lbNext.onclick  = () => showLb(cur + 1);
+  overlay.addEventListener('click', e => { if(e.target === overlay) closeLb(); });
+
+  // Swipe support for lightbox
+  let tsX = 0;
+  overlay.addEventListener('touchstart', e => { tsX = e.touches[0].clientX; }, {passive:true});
+  overlay.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tsX;
+    if(Math.abs(dx) > 50) dx < 0 ? showLb(cur+1) : showLb(cur-1);
+  });
+
+  // ESC key
+  document.addEventListener('keydown', e => {
+    if(!overlay.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLb();
+    if(e.key === 'ArrowLeft') showLb(cur-1);
+    if(e.key === 'ArrowRight') showLb(cur+1);
+  });
+})();
+
 </script>
+
+<!-- LIGHTBOX -->
+<div id="lb-overlay" role="dialog" aria-modal="true">
+  <button id="lb-close" aria-label="Fechar">✕</button>
+  <button id="lb-prev" aria-label="Anterior">&#8592;</button>
+  <img id="lb-img" src="" alt="Entregável ampliado" />
+  <button id="lb-next" aria-label="Próximo">&#8594;</button>
+  <div id="lb-counter"></div>
+</div>
+
 </body>
 </html>
