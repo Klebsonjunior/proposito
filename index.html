@@ -818,6 +818,132 @@ src="https://www.facebook.com/tr?id=1538792521116054&ev=PageView&noscript=1"/>
 </div>
 
 <!-- PAIN -->
+
+<!-- WIZARD CHECKLIST -->
+<section style="padding:64px 24px;background:#fff;">
+  <div class="c" style="max-width:580px;">
+    <p class="section-eyebrow fu">Teste rápido</p>
+    <h2 class="section-title fu" style="margin-bottom:8px;">Você está pronto para<br>o próximo relacionamento?</h2>
+    <p style="font-size:.95rem;color:#6B4A52;margin-bottom:36px;" class="fu">Responda 5 afirmações com honestidade. Leva menos de 1 minuto.</p>
+
+    <div id="wizard" style="position:relative;">
+      <!-- Progress bar -->
+      <div style="background:#F0E0E8;border-radius:99px;height:6px;margin-bottom:28px;">
+        <div id="wiz-progress" style="background:var(--rose);height:6px;border-radius:99px;width:20%;transition:width .3s;"></div>
+      </div>
+
+      <!-- Question container -->
+      <div id="wiz-question" class="fu">
+        <p id="wiz-num" style="font-family:var(--display);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;">Afirmação 1 de 5</p>
+        <p id="wiz-text" style="font-size:1.08rem;font-weight:700;font-family:var(--display);color:var(--dark);margin-bottom:24px;line-height:1.5;"></p>
+        <div id="wiz-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <!-- Result -->
+      <div id="wiz-result" style="display:none;text-align:center;" class="fu">
+        <div id="wiz-result-icon" style="font-size:2.5rem;margin-bottom:12px;"></div>
+        <h3 id="wiz-result-title" style="font-family:var(--display);font-size:1.3rem;font-weight:900;color:var(--dark);margin-bottom:12px;"></h3>
+        <p id="wiz-result-text" style="font-size:.95rem;color:#6B4A52;margin-bottom:28px;line-height:1.6;"></p>
+        <a href="https://pay.kiwify.com.br/RJ0ZUpQ" class="btn btn-rose" style="display:inline-block;">
+          Quero fazer o checklist completo por R$&nbsp;19,90
+        </a>
+        <p style="font-size:.78rem;color:#9B7A84;margin-top:12px;">20 perguntas completas + 5 materiais práticos inclusos</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var questions = [
+    {
+      text: "Consigo passar alguns dias sem atenção de ninguém sem ficar ansioso ou desesperado.",
+      opts: ["Sim, consigo tranquilo", "Às vezes fico inquieto", "Não, preciso de atenção constante"]
+    },
+    {
+      text: "Sei diferenciar o que sinto por alguém de um simples medo de estar sozinho.",
+      opts: ["Sim, consigo distinguir bem", "Fico em dúvida algumas vezes", "Não, confundo com frequência"]
+    },
+    {
+      text: "Consigo me afastar de alguém que não combina comigo, mesmo quando estou carente.",
+      opts: ["Sim, já fiz isso", "Com dificuldade, mas consigo", "Não, acabo cedendo"]
+    },
+    {
+      text: "Minha comunhão com Deus continua firme mesmo quando não tem ninguém despertando meu interesse.",
+      opts: ["Sim, minha fé não depende disso", "Oscila um pouco", "Não, minha espiritualidade sofre muito"]
+    },
+    {
+      text: "Quero namorar porque estou preparado, não porque sinto que estou ficando para trás.",
+      opts: ["Sim, é por preparo", "Mistura os dois", "Honestamente é mais o medo de ficar para trás"]
+    }
+  ];
+
+  var scores = [];
+  var cur = 0;
+
+  var numEl   = document.getElementById('wiz-num');
+  var textEl  = document.getElementById('wiz-text');
+  var optsEl  = document.getElementById('wiz-options');
+  var progEl  = document.getElementById('wiz-progress');
+  var qEl     = document.getElementById('wiz-question');
+  var resEl   = document.getElementById('wiz-result');
+
+  function renderQ(){
+    var q = questions[cur];
+    numEl.textContent = 'Afirmação ' + (cur+1) + ' de ' + questions.length;
+    textEl.textContent = q.text;
+    optsEl.innerHTML = '';
+    q.opts.forEach(function(opt, i){
+      var btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.style.cssText = 'width:100%;text-align:left;padding:14px 18px;border-radius:8px;border:2px solid #F0E0E8;background:#fff;font-size:.92rem;font-family:inherit;cursor:pointer;color:var(--dark);transition:border-color .2s,background .2s;';
+      btn.addEventListener('mouseenter', function(){ this.style.borderColor='var(--rose)'; this.style.background='#FDF6F0'; });
+      btn.addEventListener('mouseleave', function(){ this.style.borderColor='#F0E0E8'; this.style.background='#fff'; });
+      btn.addEventListener('click', function(){ answer(i); });
+      optsEl.appendChild(btn);
+    });
+    progEl.style.width = ((cur+1)/questions.length*100) + '%';
+  }
+
+  function answer(i){
+    scores.push(i); // 0=best, 1=middle, 2=worst
+    cur++;
+    if(cur < questions.length){
+      renderQ();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult(){
+    qEl.style.display = 'none';
+    resEl.style.display = 'block';
+    progEl.style.width = '100%';
+
+    var total = scores.reduce(function(a,b){return a+b;},0);
+    var iconEl  = document.getElementById('wiz-result-icon');
+    var titEl   = document.getElementById('wiz-result-title');
+    var txtEl   = document.getElementById('wiz-result-text');
+
+    if(total <= 3){
+      iconEl.textContent = '✅';
+      titEl.textContent = 'Você tem uma boa base.';
+      txtEl.textContent = 'Mas ter uma boa base não significa estar completamente pronto. O checklist completo tem 20 perguntas que vão a fundo onde esse teste não foi. Vale conferir antes do próximo passo.';
+    } else if(total <= 7){
+      iconEl.textContent = '⚠️';
+      titEl.textContent = 'Você está no caminho, mas tem pontos de atenção.';
+      txtEl.textContent = 'Algumas respostas indicam áreas que precisam de mais trabalho antes de entrar em um relacionamento. O checklist completo vai te mostrar exatamente onde focar.';
+    } else {
+      iconEl.textContent = '🔍';
+      titEl.textContent = 'Tem coisa importante pra resolver antes.';
+      txtEl.textContent = 'Suas respostas mostram que entrar em um relacionamento agora pode repetir padrões antigos. O checklist completo foi feito exatamente pra isso: te ajudar a enxergar o que precisa mudar.';
+    }
+  }
+
+  renderQ();
+})();
+</script>
+
 <section class="pain">
   <div class="pain-lines"></div>
   <div class="c">
